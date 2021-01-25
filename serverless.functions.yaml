@@ -1,0 +1,35 @@
+confirmUserSignup:
+  handler: functions/confirm-user-signup.handler
+  environment:
+    USERS_TABLE: !Ref UserTable
+  iamRoleStatements:
+    - Effect: Allow
+      Action: dynamodb:PutItem
+      Resource: !GetAtt UserTable.Arn
+
+getImageUploadurl:
+  handler: functions/get-upload-url.handler
+  environment:
+    BUCKET_NAME: !Ref AssetsBucket
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource: !Sub ${AssetsBucket.Arn}/*
+
+tweet:
+  handler: functions/tweet.handler
+  environment:
+    USERS_TABLE_NAME: !Ref UserTable
+    TWEETS_TABLE_NAME: !Ref TweetsTable
+    TIMELINES_TABLE_NAME: !Ref TimelinesTable
+  iamRoleStatements:
+    - Effect: Allow
+      Action: dynamodb:UpdateItem
+      Resource: !GetAtt UserTable.Arn
+    - Effect: Allow
+      Action: dynamodb:PutItem
+      Resource:
+        - !GetAtt TimelinesTable.Arn
+        - !GetAtt TweetsTable.Arn

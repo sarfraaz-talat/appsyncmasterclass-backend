@@ -118,7 +118,7 @@ type Tweet implements ITweet {
   text: String!
   replies: Int!
   likes: Int!
-  retqeets: Int!
+  retweets: Int!
   liked: Boolean!
   retweeted: Boolean!
 }
@@ -130,7 +130,7 @@ type Reply implements ITweet {
   text: String!
   replies: Int!
   likes: Int!
-  retqeets: Int!
+  retweets: Int!
   liked: Boolean!
   retweeted: Boolean!
   inReplyToTweet: ITweet!

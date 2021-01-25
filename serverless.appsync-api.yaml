@@ -1,6 +1,12 @@
 name: appsync-masterclass
 schema: schema.api.graphql
 authenticationType: AMAZON_COGNITO_USER_POOLS
+caching:
+  behavior: PER_RESOLVER_CACHING
+  ttl: 3600
+  atRestEncryption: true
+  transitEncryption: true
+  type: 'T2_SMALL'
 userPoolConfig:
   awsRegion: ap-south-1
   defaultAction: ALLOW
@@ -10,15 +16,24 @@ mappingTemplates:
   - type: Query
     field: getMyProfile
     dataSource: usersTable
+    caching:
+      keys:
+        - '$context.identity.username'
+      ttl: 3600
   - type: Query
     field: getImageUploadUrl
     dataSource: getImageUploadUrlFunction
     request: false
     response: false
-    
+
   - type: Mutation
     field: editMyProfile
     dataSource: usersTable
+  - type: Mutation
+    field: tweet
+    dataSource: tweetFunction
+    request: false
+    response: false
 
 dataSources:
   - type: NONE
@@ -31,3 +46,7 @@ dataSources:
     name: getImageUploadUrlFunction
     config:
       functionName: getImageUploadurl
+  - type: AWS_LAMBDA
+    name: tweetFunction
+    config:
+      functionName: tweet
